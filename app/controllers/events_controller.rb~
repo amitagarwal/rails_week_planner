@@ -1,0 +1,61 @@
+class EventsController < ApplicationController
+  layout false
+
+  def index
+    @events = Events.all 
+    if request.xhr?
+      json_out()
+    end
+
+  end
+  
+  def show
+    @events = Events.find(params[:id])
+  end
+  
+  def new
+    @events = Events.new
+  end
+  
+  def create
+    @events = Events.new(params[:events])
+    if @events.save
+      flash[:notice] = "Successfully created events."
+      render :nothing =>true
+      #redirect_to @events
+    else
+      render :action => 'new'
+    end
+  end
+  
+  def json_out
+    e = Events.find(:all)
+    e=e.map{|ee | {:id => ee.id ,:start => ee.start_date.to_s.gsub('-','/') , :end =>ee.end_date.to_s.gsub('-','/'),:title=>ee.description}}
+
+    render :json =>e.to_json ,:layout =>false 
+  end
+  
+  def edit
+    @events = Events.find(params[:id])
+  end
+  
+  def update
+    @events = Events.find(params[:id])
+    logger.info("\n /n/n \n #{params.inspect}")
+    if @events.update_attributes(params[:events])
+      flash[:notice] = "Successfully updated events."
+      render :nothing =>true
+      #redirect_to @events
+    else
+      render :action => 'edit'
+    end
+  end
+  
+  def destroy
+    @events = Events.find(params[:id])
+    @events.destroy
+    flash[:notice] = "Successfully destroyed events."
+
+    #redirect_to events_url
+  end
+end

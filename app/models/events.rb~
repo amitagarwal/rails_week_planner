@@ -1,0 +1,3 @@
+class Events < ActiveRecord::Base
+  attr_accessible :description, :bg_color_code
+end

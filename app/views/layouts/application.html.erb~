@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Untitled</title>
+    <%= stylesheet_link_tag 'application' %>
+    <%#= javascript_include_tag :defaults %>
+
+<style type='text/css'>
+
+  body {
+  font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+  margin: 0;
+  }
+  
+  h1 {
+  margin: 0;
+  padding: 0.5em;
+  }
+  
+  p.description {
+  font-size: 0.8em;
+  padding: 1em;
+  position: absolute;
+  top: 3.2em;
+  margin-right: 400px;
+  }
+  
+  #message {
+  font-size: 0.7em;
+  position: absolute;
+  top: 1em; 
+  right: 1em;
+  width: 350px;
+  display: none;
+  padding: 1em;
+  background: #ffc;
+  border: 1px solid #dda;
+  }
+  
+</style>
+<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css' />
+<link rel='stylesheet' type='text/css' href='/stylesheets/jquery.weekcalendar.css' />
+<link rel='stylesheet' type='text/css' href='/stylesheets/reset.css' />
+
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'></script>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js'></script>
+<script type='text/javascript' src='/javascripts/jquery.weekcalendar.js'></script>
+
+<script>
+
+/*
+    * Sets up the start and end time fields in the calendar event
+    * form for editing based on the calendar event being edited
+    */
+   function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
+
+      for (var i = 0; i < timeslotTimes.length; i++) {
+         var startTime = timeslotTimes[i].start;
+         var endTime = timeslotTimes[i].end;
+         var startSelected = "";
+         if (startTime.getTime() === calEvent.start.getTime()) {
+            startSelected = "selected=\"selected\"";
+         }
+         var endSelected = "";
+         if (endTime.getTime() === calEvent.end.getTime()) {
+            endSelected = "selected=\"selected\"";
+         }
+         $startTimeField.append("<option value=\"" + startTime + "\" " + startSelected + ">" + timeslotTimes[i].startFormatted + "</option>");
+         $endTimeField.append("<option value=\"" + endTime + "\" " + endSelected + ">" + timeslotTimes[i].endFormatted + "</option>");
+
+      }
+      $endTimeOptions = $endTimeField.find("option");
+      $startTimeField.trigger("change");
+   }
+
+   var $endTimeField = $("select[name='end']");
+   var $endTimeOptions = $endTimeField.find("option");
+
+   //reduces the end time options to be only after the start time options.
+   $("select[name='start']").change(function() {
+      var startTime = $(this).find(":selected").val();
+      var currentEndTime = $endTimeField.find("option:selected").val();
+      $endTimeField.html(
+            $endTimeOptions.filter(function() {
+               return startTime < $(this).val();
+            })
+            );
+
+      var endTimeSelected = false;
+      $endTimeField.find("option").each(function() {
+         if ($(this).val() === currentEndTime) {
+            $(this).attr("selected", "selected");
+            endTimeSelected = true;
+            return false;
+         }
+      });
+
+      if (!endTimeSelected) {
+         //automatically select an end date 2 slots away.
+         $endTimeField.find("option:eq(1)").attr("selected", "selected");
+      }
+
+   });
+
+
+
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <% flash.each do |name, msg| %>
+        <%= content_tag :div, msg, :id => "flash_#{name}" %>
+      <% end %>
+      <%= yield %>
+    </div>
+  </body>
+</html>
+
+<script>
+function resetForm($dialogContent) {
+      $dialogContent.find("input").val("");
+      $dialogContent.find("textarea").val("");
+   }
+
+</script>

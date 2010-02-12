@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+
+  <link rel='stylesheet' type='text/css' href='/stylesheets/reset.css' />
+  <link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/start/jquery-ui.css' />
+  <link rel='stylesheet' type='text/css' href='/stylesheets/jquery.weekcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/stylesheets/demo.css' />
+  
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'></script>
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js'></script>
+  <script type='text/javascript' src='/javascripts/jquery.weekcalendar.js'></script>
+  <script type='text/javascript' src='/javascripts/demo.js'></script>
+
+</head>
+<body> 
+  <div id="about_button_container">
+    <button type="button" id="about_button">Readme </button>
+  </div>
+  <div id='calendar'></div>
+  <div id="event_edit_container">
+    <form action='amit'>
+      <input type="hidden" />
+      <ul>
+	<li>
+	  <span>Date: </span><span class="date_holder"></span> 
+	</li>
+	<li>
+	  <label for="start">Start Time: </label><select name="start"><option value="">Select Start Time</option></select>
+	</li>
+	<li>
+	  <label for="end">End Time: </label><select name="end"><option value="">Select End Time</option></select>
+	</li>
+	<li>
+	  <label for="title">Title: </label><input type="text" name="title" />
+	</li>
+	<li>
+	  <label for="body">Body: </label><textarea name="body"></textarea>
+	</li>
+      </ul>
+      </form>
+  </div>
+  <div id="about">
+    <h2>Summary</h2>
+    <p>Amit Agarwal
+    </p>
+  </div>
+
+
+<script>
+      function save_event(event)
+      {
+             jQuery.post('/events/create',
+              { 'events[description]':event.body ,'events[end_date]':event.end ,'events[start_date]':event.start}, 
+            function(data){alert("event Saved");}                                                                  
+                        );
+      }
+function  update_event(event)
+{
+             jQuery.ajax({url:'/events/'+ event.id,
+                         type:'PUT',
+                         data:"events[end_date]=" + event.end +"&events[start_date]="+ event.start,
+                         success: function(data){
+                        alert("event Update");
+                        }  } );
+      }
+
+
+function delete_event(event)
+{
+             jQuery.ajax({url:'/events/'+ event,
+                         type:'DELETE',
+                         success: function(data){
+                        alert("event Delted");
+                        }  } );
+      }
+</script>
+  
+</body>
+</html>
+
+<!--
+< % title "Events" % >
+
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Bg Color Code</th>
+  </tr>
+  <% for events in @events %>
+    <tr>
+      <td><%=h events.description %></td>
+      <td><%=h events.bg_color_code %></td>
+      <td>< %= link_to "Show", events %></td>
+      <td>< % = link_to "Edit", edit_events_path(events) % ></td>
+      <td>< % = link_to "Destroy", events, :confirm => 'Are you sure?', :method => :delete % ></td>
+    </tr>
+  <% end %>
+</table>
+
+<p>< % = link_to "New Events", new_events_path %></p>
+
+
+-->

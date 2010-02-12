@@ -1,0 +1,12 @@
+<% form_for @events do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </p>
+  <p>
+    <%= f.label :bg_color_code %><br />
+    <%= f.text_field :bg_color_code %>
+  </p>
+  <p><%= f.submit "Submit" %></p>
+<% end %>

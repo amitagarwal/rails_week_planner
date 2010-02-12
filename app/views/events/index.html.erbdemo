@@ -1,0 +1,125 @@
+
+<script type='text/javascript'>
+
+  var $calendar = $('#calendar');
+  var year = new Date().getFullYear();
+  var month = new Date().getMonth();
+  var day = new Date().getDate();
+  var eventData = {
+  events : [
+  <% for event in @events %>
+     {"id":<%= event.id%>, "start": new Date(<%= event.start_date.year%>, <%= event.start_date.month%>, <%= event.start_date.day%>, 12), "end": new Date(<%= event.end_date.year %>, <%= event.end_date.month%>, <%= event.end_date.day%>, 13, 35),"title":"Lunch with Mike"}
+  <%if !@events.last%>,<%end%>
+  <%end%>
+  ]
+  };
+
+
+  $(document).ready(function() {
+
+  $('#calendar').weekCalendar({
+  timeslotsPerHour: 4,
+  height: function($calendar){
+  return $(window).height() - $("h1").outerHeight();
+  },
+  eventRender : function(calEvent, $event) {
+  if(calEvent.end.getTime() < new Date().getTime()) {
+			      $event.css("backgroundColor", "#aaa");
+			      $event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
+			      }
+			      },
+			      eventNew : function(calEvent, $event) {
+			      displayMessage("<strong>Added event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      var $dialogContent = $("#event_edit_container");
+			      resetForm($dialogContent);
+			      var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+			      var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+			      var titleField = $dialogContent.find("input[name='title']");
+			      var bodyField = $dialogContent.find("textarea[name='body']");
+			      $dialogContent.dialog({
+			      modal: true,
+			      title: "New Calendar Event",
+			      close: function() {
+			      $dialogContent.dialog("destroy");
+			      $dialogContent.hide();
+			      $('#calendar').weekCalendar("removeUnsavedEvents");
+			      },
+			      buttons: {
+			      save : function() {
+			      calEvent.id = id;
+			      id++;
+			      calEvent.start = new Date(startField.val());
+			      calEvent.end = new Date(endField.val());
+			      calEvent.title = titleField.val();
+			      calEvent.body = bodyField.val();
+			      
+			      $calendar.weekCalendar("removeUnsavedEvents");
+			      $calendar.weekCalendar("updateEvent", calEvent);
+			      $dialogContent.dialog("close");
+			      },
+			      cancel : function() {
+			      $dialogContent.dialog("close");
+			      }
+			      }
+			      }).show();
+			      
+			      $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+			      //setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+			      
+			      
+			      },
+			      eventDrop : function(calEvent, $event) {
+			      displayMessage("<strong>Moved Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      },
+			      eventResize : function(calEvent, $event) {
+			      displayMessage("<strong>Resized Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      },
+			      eventClick : function(calEvent, $event) {
+			      displayMessage("<strong>Clicked Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      },
+			      eventMouseover : function(calEvent, $event) {
+			      displayMessage("<strong>Mouseover Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      },
+			      eventMouseout : function(calEvent, $event) {
+			      displayMessage("<strong>Mouseout Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
+			      },
+			      noEvents : function() {
+			      displayMessage("There are no events for this week");
+			      },
+			      data:eventData
+			      });
+
+			      function displayMessage(message) {
+			      $("#message").html(message).fadeIn();
+			      }
+
+			      $("<div id=\"message\" class=\"ui-corner-all\"></div>").prependTo($("body"));
+			      
+			      });
+
+</script>
+  <h1>Week Calendar Demo</h1>
+  <p class="description">This calendar demonstrates a basic calendar. Events triggered are displayed in the message area. Appointments in the past are shaded grey.</p>
+  <div id='calendar'></div>
+<div id="event_edit_container">
+  <form action='amit'>
+    <input type="hidden" />
+    <ul>
+      <li>
+	<span>Date: </span><span class="date_holder"></span> 
+	</li>
+      <li>
+	<label for="start">Start Time: </label><select name="start"><option value="">Select Start Time</option></select>
+	</li>
+      <li>
+	<label for="end">End Time: </label><select name="end"><option value="">Select End Time</option></select>
+	</li>
+      <li>
+	<label for="title">Title: </label><input type="text" name="title" />
+	</li>
+      <li>
+	<label for="body">Body: </label><textarea name="body"></textarea>
+	</li>
+      </ul>
+    </form>
+  </div>

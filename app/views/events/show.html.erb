@@ -1,0 +1,16 @@
+<% title "Events" %>
+
+<p>
+  <strong>Description:</strong>
+  <%=h @events.description %>
+</p>
+<p>
+  <strong>Bg Color Code:</strong>
+  <%=h @events.bg_color_code %>
+</p>
+
+<p>
+  <%= link_to "Edit", edit_events_path(@events) %> |
+  <%= link_to "Destroy", @events, :confirm => 'Are you sure?', :method => :delete %> |
+  <%= link_to "View All", events_path %>
+</p>
