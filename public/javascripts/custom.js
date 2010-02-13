@@ -84,6 +84,7 @@ $(document).ready(function() {
 		 displayMessage("<strong>Moved Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
       },
       eventResize : function(calEvent, $event) {
+			   		 update_event(calEvent);
 		displayMessage("<strong>Moved Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
       },
       eventClick : function(calEvent, $event) {
@@ -256,7 +257,8 @@ $(document).ready(function() {
             function(data){
       $(event).id =data;
       
-      alert("event Saved");}                                                                  
+      // alert("event Saved");
+	    }                                                                  
                         );
       }
 function  update_event(event)
@@ -265,7 +267,7 @@ function  update_event(event)
                          type:'PUT',
                          data:"events[end_date]=" + event.end +"&events[start_date]="+ event.start,
                          success: function(data){
-                        alert("event Updated");
+			 // alert("event Updated");
                         }  } );
       }
 
@@ -275,6 +277,6 @@ function delete_event(event)
              jQuery.ajax({url:'/events/'+ event,
                          type:'DELETE',
                          success: function(data){
-                        alert("event Delted");
+			 // alert("event Delted");
                         }  } );
       }
